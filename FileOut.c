@@ -1,5 +1,5 @@
 #include "FileOut.h"
-#include "Signal.h"
+#include "Samples.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include "Generator.h"

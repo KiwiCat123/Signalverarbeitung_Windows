@@ -1,53 +1,53 @@
 #include <Windows.h>
 #include <stdio.h>
 #include "Generator.h"
-#include "Signal.h"
+#include "Samples.h"
 #include "FileOut.h"
-#include "filter.h"
+#include "Filter_1.h"
 #include <signal.h>
 #include <stdbool.h>
 #include "Timer.h"
 #include <limits.h>
 
-#define THREADS 2
 #define TEST_SAMPLES 50
 
 volatile bool abortSig = FALSE; //Signal to end in RT-mode, true = end
-unsigned long long* collectedTimes = NULL;
-int amount = 0;
-void result_statistics();
+unsigned long long* collectedTimes = NULL; //collected time differences by consoleOut()
+int amount = 0; //amount of collectedTimes
+void result_statistics(); //evaluate collected statistic values
 
 void SigHandler(int a) {
 	printf_s("ctrl-c!\n");
-	abortSig = TRUE;
+	abortSig = TRUE; //signals threads to abort
 }
 
-int main() {
-	SIGNAL_OUT* aSignalOutput = NULL;
-	SIGNAL_OUT* aFilteredOutput = NULL;
+int main(int argc, char* argv[]) {
+	SIGNAL_OUT* aSignalOutput = NULL; //collected samples from generator
+	SIGNAL_OUT* aFilteredOutput = NULL; //collected samples from filter
 	unsigned long ulCountPoints = 0; //number of overall points of output signal
 	unsigned long long ullSampleFrq = SAMPLE_FRQ;
-	char path[] = "out.csv";
-	int ret;
+	char path[] = "out.csv"; //generated signal file
+	int ret = -5;
 	HANDLE ThreatsHandle;
 
-	signal(SIGINT, SigHandler);
+	signal(SIGINT, SigHandler); //catch CTRL+C
 
-	//while (1);
-	/*ulCountPoints = generate(&aSignalOutput, RECTANGLE, MAX_SIG_VALUE, 1e-3, 1e-2, ullSampleFrq);
-	aFilteredOutput = filter(aSignalOutput, ulCountPoints);
-	ret = writeCSV(aSignalOutput, aFilteredOutput, ulCountPoints, path);*/
-	//getchar();
+	if (*(argv[1]) == 'a') {
+		ulCountPoints = generate(&aSignalOutput, RECTANGLE, MAX_SIG_VALUE, 1e-3, 1e-2, ullSampleFrq);
+		aFilteredOutput = filter(aSignalOutput, ulCountPoints);
+		ret = writeCSV(aSignalOutput, aFilteredOutput, ulCountPoints, path);
+	}
+	else if (*(argv[1]) == 'b') {
+		ThreatsHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)consoleOut, NULL, 0, NULL); //output Thread
+		if (ThreatsHandle == NULL) return -2;
+		timer_fnc(); //start Timer
+		ret = generate_RT(RECTANGLE, MAX_SIG_VALUE, 8, 2); //start generator
+		WaitForSingleObject(ThreatsHandle, INFINITE);
 
-	ThreatsHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)consoleOut, NULL, 0, NULL); //output Thread
-	if (ThreatsHandle == NULL) return -2;
-	timer_fnc(); //start Timer
-	ret = generate_RT(RECTANGLE, MAX_SIG_VALUE, 8, 2); //start generator
-	WaitForSingleObject(ThreatsHandle, INFINITE);
+		result_statistics();
 
-	result_statistics();
-	
-	free(collectedTimes);
+		free(collectedTimes);
+	}
 
 	return ret;
 }

@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(IncludePath);$(MSBuildProjectDirectory)\include;</IncludePath>
+    <IncludePath>$(MSBuildProjectDirectory)\include;$(IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -150,9 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\FileOut.h" />
-    <ClInclude Include="include\filter.h" />
     <ClInclude Include="include\Generator.h" />
-    <ClInclude Include="include\Signal.h" />
+    <ClInclude Include="include\Filter_1.h" />
+    <ClInclude Include="include\Samples.h" />
     <ClInclude Include="include\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

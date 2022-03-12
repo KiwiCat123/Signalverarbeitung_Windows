@@ -1,7 +1,7 @@
-#include "filter.h"
-#include "Signal.h"
+#include "Samples.h"
 #include <stdlib.h>
 #include <limits.h>
+#include "Filter_1.h"
 
 const double dCoeff[9] = {
    0.005069883484836,  0.02935816274752,   0.1107437912658,   0.2193406809055,

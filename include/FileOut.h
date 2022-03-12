@@ -1,5 +1,5 @@
 #pragma once
-#include "Signal.h"
+#include "Samples.h"
 #include <stdbool.h>
 #include <Windows.h>
 #include <time.h>

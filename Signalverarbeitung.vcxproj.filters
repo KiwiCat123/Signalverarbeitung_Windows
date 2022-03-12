@@ -35,16 +35,16 @@
     <ClInclude Include="include\FileOut.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\filter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="include\Generator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="include\Signal.h">
+    <ClInclude Include="include\Samples.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="include\Timer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Filter_1.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

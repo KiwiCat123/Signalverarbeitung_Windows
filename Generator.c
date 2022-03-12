@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Signal.h"
+#include "Samples.h"
 #include "Generator.h"
 #include <Windows.h>
 #include "Timer.h"
