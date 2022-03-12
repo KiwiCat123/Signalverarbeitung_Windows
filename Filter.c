@@ -41,3 +41,11 @@ SIGNAL_OUT* filter(SIGNAL_OUT SignalInput[], unsigned long amount) {
 
 	return FilterOutput;
 }
+
+int filter_RT() {
+	SignalPoint sampleBuffer[FILTER_LENGTH] = { 0,0,0,0,0,0,0,0,0 };
+	int i;
+
+
+	return 0;
+}

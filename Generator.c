@@ -25,11 +25,8 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned lon
 	}
 	};
 
-	//while (_signal_generate); //wait until set to 0 again from other thread
-	//_signal_generate = true; //reset timer flag
-	//ReleaseSemaphore(SemHandle[1], 1, NULL); //release output thread
+	_generator_ready = false; //new sample ready
 	WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
-	_signal_out = false; //set output flag, sample ready for output
 
 	while (!abortSig) {
 		switch (eSignal) {
@@ -47,11 +44,8 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned lon
 			dCurTime -= ulPeriod;
 		}
 
-		//while (_signal_generate); //wait until set to 0 again from other thread
-		//_signal_generate = true; //reset timer flag
-		//ReleaseSemaphore(SemHandle[1], 1, NULL); //release output thread
+		_generator_ready = false; //new sample ready
 		WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
-		_signal_out = false; //set output flag, sample ready for output
 		
 	}
 

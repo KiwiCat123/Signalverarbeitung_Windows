@@ -35,11 +35,11 @@ void consoleOut() {
 
 	TimeInLongLong.QuadPart = 0;
 
-	_signal_out = true; //reset timer flag
+	_generator_ready = true; //reset timer flag
 
 	while (!abortSig) {
-		while (_signal_out); //wait for generator flag to get set
-		_signal_out = true; //reset timer flag
+		while (_generator_ready); //wait for generator flag to get set
+		_generator_ready = true; //reset timer flag
 		/*while (WaitForSingleObject(SemHandle[1], 500) == WAIT_TIMEOUT) {
 			if (abortSig) return;
 		}*/
