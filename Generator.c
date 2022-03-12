@@ -6,12 +6,11 @@
 #include "Timer.h"
 
 
-int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, SignalTime dPeriod, const unsigned long long ullSampleRate) {
-	SignalTime dTimePerPoint; //time between 2 points of output signal
-	SignalTime dCurTime = 0; //current time for next point
+int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned long ulPeriod, const unsigned long ulSamplePeriod) {
+	unsigned long dCurTime = 0; //current time for next point
 
 	//_signal_generate = true;
-	dTimePerPoint = 1.0 / ullSampleRate;
+	ulSamplePeriod;
 
 	//first point
 	switch (eSignal) {
@@ -19,14 +18,12 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, SignalTime dPeriod
 		generateOutBuf = 0;
 	} break;
 	case RECTANGLE: {
-		generateOutBuf = _Rectangle(0.0, 0, dPeriod);
+		generateOutBuf = _Rectangle(0.0, 0, ulPeriod);
 	} break;
 	default: {
 		return -1;
 	}
 	};
-
-	dCurTime += dTimePerPoint; //increase time
 
 	//while (_signal_generate); //wait until set to 0 again from other thread
 	//_signal_generate = true; //reset timer flag
@@ -45,10 +42,9 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, SignalTime dPeriod
 		};
 
 		//increase time, check if period is over
-		dCurTime += dTimePerPoint;
-		if (dCurTime > dPeriod) {
-			dCurTime -= dPeriod;
-			dCurTime -= dTimePerPoint;
+		dCurTime += ulSamplePeriod;
+		if (dCurTime >= ulPeriod) {
+			dCurTime -= ulPeriod;
 		}
 
 		//while (_signal_generate); //wait until set to 0 again from other thread
