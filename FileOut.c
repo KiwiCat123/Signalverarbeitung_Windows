@@ -38,15 +38,14 @@ void consoleOut() {
 	_generator_ready = true; //reset timer flag
 
 	while (!abortSig) {
-		while (_generator_ready); //wait for generator flag to get set
-		_generator_ready = true; //reset timer flag
+		while (_generator_ready) { //wait for generator flag to get set
+			if (abortSig) return;
+		}
+		sampleOut = generateOutBuf; //read new sample
+		_generator_ready = true; //reset generator flag, sample read from buffer
 		/*while (WaitForSingleObject(SemHandle[1], 500) == WAIT_TIMEOUT) {
 			if (abortSig) return;
 		}*/
-
-		//read new sample
-		sampleOut = generateOutBuf;
-		//_signal_generate = false;
 
 		//calculate time between new samples
 		oldTime = TimeInLongLong.QuadPart;

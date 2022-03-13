@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 		ThreatsHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)consoleOut, NULL, 0, NULL); //output Thread
 		if (ThreatsHandle == NULL) return -2;
 		timer_fnc(); //start Timer
-		ret = generate_RT(RECTANGLE, MAX_SIG_VALUE, 800, PERIOD); //start generator
+		ret = generate_RT(RECTANGLE, MAX_SIG_VALUE, PERIOD*8, PERIOD); //start generator
 		WaitForSingleObject(ThreatsHandle, INFINITE);
 
 		result_statistics();

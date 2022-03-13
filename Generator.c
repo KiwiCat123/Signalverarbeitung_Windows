@@ -8,33 +8,30 @@
 
 int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned long ulPeriod, const unsigned long ulSamplePeriod) {
 	unsigned long dCurTime = 0; //current time for next point
+	volatile SignalPoint newSample;
 
-	//_signal_generate = true;
-	ulSamplePeriod;
-
-	//first point
+	//init generator function
 	switch (eSignal) {
 	case SINUS: {
-		generateOutBuf = 0;
+		newSample = 0;
 	} break;
 	case RECTANGLE: {
-		generateOutBuf = _Rectangle(0.0, 0, ulPeriod);
+		newSample = _Rectangle(0.0, 0, ulPeriod);
 	} break;
 	default: {
 		return -1;
 	}
 	};
 
-	_generator_ready = false; //new sample ready
 	WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
 
 	while (!abortSig) {
 		switch (eSignal) {
 		case SINUS: {
-			generateOutBuf = 0;
+			newSample = 0;
 		} break;
 		case RECTANGLE: {
-			generateOutBuf = _Rectangle(dCurTime, sAmplitude, 0.0);
+			newSample = _Rectangle(dCurTime, sAmplitude, 0.0);
 		} break;
 		};
 
@@ -44,6 +41,10 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned lon
 			dCurTime -= ulPeriod;
 		}
 
+		while (!_generator_ready) { //wait for generator flag to get reset, until last sample got read from buffer
+			if (abortSig) return;
+		} 
+		generateOutBuf = newSample; //write new sample in buffer
 		_generator_ready = false; //new sample ready
 		WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
 		
