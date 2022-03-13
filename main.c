@@ -38,9 +38,9 @@ int main(int argc, char* argv[]) {
 		ret = writeCSV(aSignalOutput, aFilteredOutput, ulCountPoints, path);
 	}
 	else if (*(argv[1]) == 'b') {
+		timer_fnc(); //start Timer
 		ThreatsHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)consoleOut, NULL, 0, NULL); //output Thread
 		if (ThreatsHandle == NULL) return -2;
-		timer_fnc(); //start Timer
 		ret = generate_RT(RECTANGLE, MAX_SIG_VALUE, PERIOD*8, PERIOD); //start generator
 		WaitForSingleObject(ThreatsHandle, INFINITE);
 

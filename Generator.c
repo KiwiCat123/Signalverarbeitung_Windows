@@ -3,7 +3,6 @@
 #include "Samples.h"
 #include "Generator.h"
 #include <Windows.h>
-#include "Timer.h"
 
 
 int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned long ulPeriod, const unsigned long ulSamplePeriod) {
@@ -23,7 +22,6 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned lon
 	}
 	};
 
-	WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
 
 	while (!abortSig) {
 		switch (eSignal) {
@@ -42,12 +40,10 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned lon
 		}
 
 		while (!_generator_ready) { //wait for generator flag to get reset, until last sample got read from buffer
-			if (abortSig) return;
+			if (abortSig) return 0;
 		} 
 		generateOutBuf = newSample; //write new sample in buffer
 		_generator_ready = false; //new sample ready
-		WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
-		
 	}
 
 	return 0;
