@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 	unsigned long long ullSampleFrq = SAMPLE_FRQ;
 	char path[] = "out.csv"; //generated signal file
 	int ret = -5;
-	HANDLE ThreatsHandle;
+	HANDLE ThreadHandle[2];
 
 	signal(SIGINT, SigHandler); //catch CTRL+C
 
@@ -39,10 +39,12 @@ int main(int argc, char* argv[]) {
 	}
 	else if (*(argv[1]) == 'b') {
 		timer_fnc(); //start Timer
-		ThreatsHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)consoleOut, NULL, 0, NULL); //output Thread
-		if (ThreatsHandle == NULL) return -2;
+		ThreadHandle[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)consoleOut, NULL, 0, NULL); //output Thread
+		if (ThreadHandle[0] == NULL) return -2;
+		ThreadHandle[1] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)filter_RT, NULL, 0, NULL); //filter thread
+		if (ThreadHandle[1] == NULL) return -2;
 		ret = generate_RT(RECTANGLE, MAX_SIG_VALUE, PERIOD*8, PERIOD); //start generator
-		WaitForSingleObject(ThreatsHandle, INFINITE);
+		WaitForMultipleObjects(2, ThreadHandle, TRUE, INFINITE);
 
 		result_statistics();
 

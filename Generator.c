@@ -22,7 +22,7 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned lon
 	}
 	};
 
-
+	//generating
 	while (!abortSig) {
 		switch (eSignal) {
 		case SINUS: {

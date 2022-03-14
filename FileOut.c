@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "Generator.h"
 #include "Timer.h"
+#include "Filter_1.h"
 
 
 void statistic(unsigned long long time_diff);
@@ -36,7 +37,7 @@ void consoleOut() {
 	TimeInLongLong.QuadPart = 0;
 
 	WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
-	_generator_ready = true; //reset generator flag
+	_signal_out = true; //reset filter flag
 
 	while (!abortSig) {
 		while (WaitForSingleObject(Timer_Handle, INFINITE) == WAIT_TIMEOUT) { //wait for timer
@@ -54,10 +55,10 @@ void consoleOut() {
 
 		printf_s("%i, %.4f ms\n", sampleOut, TimeInDouble);
 
-		while (_generator_ready) { //wait for generator flag to get set
+		while (_signal_out) { //wait for generator flag to get set
 			if (abortSig) return;
 		}
-		sampleOut = generateOutBuf; //read new sample
-		_generator_ready = true; //reset generator flag, sample read from buffer
+		sampleOut = filterOutBuf; //read new sample from filter
+		_signal_out = true; //reset filter flag, sample read from buffer
 	}
 }
