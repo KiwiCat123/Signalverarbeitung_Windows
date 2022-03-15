@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "Generator.h"
+#include "Timer.h"
+#include "Filter_1.h"
 
 
 void statistic(unsigned long long time_diff);
@@ -27,26 +29,20 @@ int writeCSV(SIGNAL_OUT SignalGenerator[], SIGNAL_OUT SignalFiltered[], unsigned
 }
 
 void consoleOut() {
-	SignalPoint sampleOut;
+	SignalPoint sampleOut = 0;
 	unsigned long long _time_diff = 0; //time difference between samples
 	LARGE_INTEGER TimeInLongLong;
 	double TimeInDouble; //time difference in double in ms
 	long long oldTime = 0;
-
 	TimeInLongLong.QuadPart = 0;
 
-	_signal_out = true; //reset timer flag
+	WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
+	_signal_out = true; //reset filter flag
 
 	while (!abortSig) {
-		while (_signal_out); //wait for generator flag to get set
-		_signal_out = true; //reset timer flag
-		/*while (WaitForSingleObject(SemHandle[1], 500) == WAIT_TIMEOUT) {
+		while (WaitForSingleObject(Timer_Handle, INFINITE) == WAIT_TIMEOUT) { //wait for timer
 			if (abortSig) return;
-		}*/
-
-		//read new sample
-		sampleOut = generateOutBuf;
-		//_signal_generate = false;
+		}
 
 		//calculate time between new samples
 		oldTime = TimeInLongLong.QuadPart;
@@ -58,5 +54,11 @@ void consoleOut() {
 		statistic(_time_diff);
 
 		printf_s("%i, %.4f ms\n", sampleOut, TimeInDouble);
+
+		while (_signal_out) { //wait for generator flag to get set
+			if (abortSig) return;
+		}
+		sampleOut = filterOutBuf; //read new sample from filter
+		_signal_out = true; //reset filter flag, sample read from buffer
 	}
 }
