@@ -56,6 +56,7 @@ int main(int argc, char* argv[]) {
 
 void statistic(unsigned long long time_diff) {
 	static bool init = false;
+	unsigned long long* new_collectedTimes;
 
 	if (!init) {
 		collectedTimes = malloc(sizeof(unsigned long long));
@@ -67,8 +68,10 @@ void statistic(unsigned long long time_diff) {
 	}
 
 	amount++;
-	collectedTimes = realloc(collectedTimes, sizeof(unsigned long long)*amount);
-	if (!collectedTimes) return;
+	new_collectedTimes = realloc(collectedTimes, sizeof(unsigned long long)*amount);
+	if (!new_collectedTimes) return;
+	else collectedTimes = new_collectedTimes;
+	
 	collectedTimes[amount - 1] = time_diff;
 
 	if (amount == TEST_SAMPLES)
