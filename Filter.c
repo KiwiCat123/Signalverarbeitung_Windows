@@ -63,7 +63,7 @@ int filter_RT() {
 		while (_generator_ready) { //wait for generator flag to get set
 			if (abortSig) return -1;
 		}
-		sampleBuffer[bufferPos] = generateOutBuf; //read new sample
+		genSample = sampleBuffer[bufferPos] = generateOutBuf; //read new sample
 		_generator_ready = true; //reset generator flag, sample read from buffer
 
 		if (dResult > 0) dResult += 0.5; //round result for integer conversion

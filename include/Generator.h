@@ -10,7 +10,6 @@ unsigned long generate(SIGNAL_OUT** SignalReturn, enum eSIGNAL eSignal, SignalPo
 SignalPoint _Rectangle(SignalTime dCurTime, const SignalPoint amplitude, SignalTime dSetPeriodTime);
 
 int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned long ulPeriod, const unsigned long ulSamplePeriod);
-volatile bool _signal_generate; //timer flag, ready for new sample, false = timer ended
 volatile bool _generator_ready; //flag generator finished new sample, false = ready (new sample ready)
 volatile bool abortSig; //Signal to end in RT-mode, true = end
 volatile SignalPoint generateOutBuf; //output buffer for single sample from generator

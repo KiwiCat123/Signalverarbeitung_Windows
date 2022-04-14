@@ -30,6 +30,7 @@ int writeCSV(SIGNAL_OUT SignalGenerator[], SIGNAL_OUT SignalFiltered[], unsigned
 
 void consoleOut() {
 	SignalPoint sampleOut = 0;
+	SignalPoint generatorSample = 0;
 	unsigned long long _time_diff = 0; //time difference between samples
 	LARGE_INTEGER TimeInLongLong;
 	double TimeInDouble; //time difference in double in ms
@@ -53,12 +54,13 @@ void consoleOut() {
 		TimeInDouble = (double)_time_diff / 10000.0;
 		statistic(_time_diff);
 
-		printf_s("%i, %.4f ms\n", sampleOut, TimeInDouble);
+		printf_s("%i, %i, %.4f ms\n", generatorSample, sampleOut, TimeInDouble);
 
 		while (_signal_out) { //wait for generator flag to get set
 			if (abortSig) return;
 		}
 		sampleOut = filterOutBuf; //read new sample from filter
+		generatorSample = genSample; //read corresponding generator sample
 		_signal_out = true; //reset filter flag, sample read from buffer
 	}
 }
