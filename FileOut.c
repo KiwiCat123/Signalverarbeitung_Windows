@@ -64,3 +64,39 @@ void consoleOut() {
 		_signal_out = true; //reset filter flag, sample read from buffer
 	}
 }
+
+void CSV_out() {
+	SignalPoint sampleOut = 0;
+	SignalPoint generatorSample = 0;
+	FILE* outFile = NULL;
+	char path[] = "out.csv";
+	errno_t err;
+	unsigned long long time = 0;
+	int amount = 0;
+	
+	WaitForSingleObject(Timer_Handle, INFINITE); //wait for timer
+	_signal_out = true; //reset filter flag
+	
+	err = fopen_s(&outFile, path, "w");
+	if (err) return;
+	fprintf_s(outFile, "Time;Value(generator);Value(filtered)\n");
+
+	while (!abortSig) {
+		while (WaitForSingleObject(Timer_Handle, INFINITE) == WAIT_TIMEOUT) { //wait for timer
+			if (abortSig) return;
+		}
+
+		fprintf(outFile, "%llu;%i;%i\n", time, generatorSample, sampleOut);
+		time += PERIOD;
+
+		while (_signal_out) { //wait for generator flag to get set
+			if (abortSig) return;
+		}
+		sampleOut = filterOutBuf; //read new sample from filter
+		generatorSample = genSample; //read corresponding generator sample
+		_signal_out = true; //reset filter flag, sample read from buffer
+
+		if (amount++ >= 500) abortSig = true;
+	}
+
+}

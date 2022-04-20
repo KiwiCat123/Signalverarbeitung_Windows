@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <stdbool.h>
 
-#define PERIOD 100 //timer period in ms
+#define PERIOD 10 //timer period in ms
 
 void timer_fnc(); //start and control timer
 

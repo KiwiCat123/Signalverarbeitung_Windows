@@ -4,12 +4,11 @@
 #include "Filter_1.h"
 #include "Generator.h"
 #include <stdbool.h>
-#include <math.h>
 
 const double dCoeff[9] = {
-   0.005069883484836,  0.02935816274752,   0.1107437912658,   0.2193406809055,
-	 0.2709749631927,   0.2193406809055,   0.1107437912658,  0.02935816274752,
-   0.005069883484836
+		0.01755601878003,  0.04801081081975,   0.1223468789475,   0.1976006889745,
+		0.2289712049564,   0.1976006889745,   0.1223468789475,  0.04801081081975,
+		0.01755601878003
 };
 
 SIGNAL_OUT* filter(SIGNAL_OUT SignalInput[], unsigned long amount) {
@@ -52,8 +51,13 @@ int filter_RT() {
 	int bufferPos = 0;
 	int i;
 	double dResult = 0;
+	SignalPoint newGenSample = 0; //saved sample from generator
+	
+	_generator_ready = true; //reset generator flag
 
 	while (!abortSig) {
+		newGenSample = sampleBuffer[bufferPos]; //save last sample from generator
+		
 		for (i = 0; i < FILTER_LENGTH; i++) {
 			dResult += dCoeff[i] * (double)sampleBuffer[bufferPos];
 			bufferPos = (bufferPos + 1) % FILTER_LENGTH; //pointer on next position in buffer
@@ -64,7 +68,7 @@ int filter_RT() {
 		while (_generator_ready) { //wait for generator flag to get set
 			if (abortSig) return -1;
 		}
-		genSample = sampleBuffer[bufferPos] = generateOutBuf; //read new sample
+		sampleBuffer[bufferPos] = generateOutBuf; //read new sample
 		_generator_ready = true; //reset generator flag, sample read from buffer
 
 		if (dResult >= 0.0) dResult += 0.5; //round result for integer conversion
@@ -75,6 +79,7 @@ int filter_RT() {
 			if (abortSig) return -1;
 		}
 		filterOutBuf = (SignalPoint)dResult; //write filtered sample in output buffer
+		genSample = newGenSample; //write unfiltered sample in output buffer
 		_signal_out = false; //new sample ready (filtered)
 		dResult = 0.0;
 	}

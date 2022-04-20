@@ -7,3 +7,4 @@
 int writeCSV(SIGNAL_OUT SignalGenerator[], SIGNAL_OUT SignalFiltered[], unsigned long count, char path[]);
 
 void consoleOut();
+void CSV_out();

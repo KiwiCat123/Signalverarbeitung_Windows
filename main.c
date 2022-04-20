@@ -39,15 +39,16 @@ int main(int argc, char* argv[]) {
 	}
 	else if (*(argv[1]) == 'b') {
 		timer_fnc(); //start Timer
-		ThreadHandle[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)consoleOut, NULL, 0, NULL); //output Thread
+		ThreadHandle[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CSV_out, NULL, 0, NULL); //output Thread
 		if (ThreadHandle[0] == NULL) return -2;
 		ThreadHandle[1] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)filter_RT, NULL, 0, NULL); //filter thread
 		if (ThreadHandle[1] == NULL) return -2;
-		ret = generate_RT(RECTANGLE, MAX_SIG_VALUE, PERIOD*8, PERIOD); //start generator
+		ret = generate_RT(RECTANGLE, 20000, PERIOD*80, PERIOD); //start generator
 		WaitForMultipleObjects(2, ThreadHandle, TRUE, INFINITE);
 
 		result_statistics();
 
+		_fcloseall();
 		free(collectedTimes);
 	}
 
@@ -57,6 +58,8 @@ int main(int argc, char* argv[]) {
 void statistic(unsigned long long time_diff) {
 	static bool init = false;
 	unsigned long long* new_collectedTimes;
+
+	if (TEST_SAMPLES == 0) return;
 
 	if (!init) {
 		collectedTimes = malloc(sizeof(unsigned long long));
@@ -85,6 +88,8 @@ void result_statistics() {
 	unsigned long long min = ULLONG_MAX;
 	double temp1;
 	double temp2_convert;
+
+	if(amount <= 0) return;
 
 	for (i = 0; i < amount; i++) {
 		average += collectedTimes[i];
