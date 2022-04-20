@@ -4,6 +4,7 @@
 #include "Filter_1.h"
 #include "Generator.h"
 #include <stdbool.h>
+#include <math.h>
 
 const double dCoeff[9] = {
    0.005069883484836,  0.02935816274752,   0.1107437912658,   0.2193406809055,
@@ -34,7 +35,7 @@ SIGNAL_OUT* filter(SIGNAL_OUT SignalInput[], unsigned long amount) {
 		
 		FilterOutput[count].time = SignalInput[count].time; //copy time
 
-		if (dResult > 0) dResult += 0.5; //round result for integer conversion
+		if (dResult >= 0.0) dResult += 0.5; //round result for integer conversion
 		else dResult -= 0.5;
 		if (dResult > MAX_SIG_VALUE) dResult = MAX_SIG_VALUE; //prevent overflow
 		else if (dResult < MIN_SIG_VALUE) dResult = MIN_SIG_VALUE;
@@ -66,7 +67,7 @@ int filter_RT() {
 		genSample = sampleBuffer[bufferPos] = generateOutBuf; //read new sample
 		_generator_ready = true; //reset generator flag, sample read from buffer
 
-		if (dResult > 0) dResult += 0.5; //round result for integer conversion
+		if (dResult >= 0.0) dResult += 0.5; //round result for integer conversion
 		else dResult -= 0.5;
 		if (dResult > MAX_SIG_VALUE) dResult = MAX_SIG_VALUE; //prevent overflow
 		else if (dResult < MIN_SIG_VALUE) dResult = MIN_SIG_VALUE;
