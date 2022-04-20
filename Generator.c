@@ -3,6 +3,7 @@
 #include "Samples.h"
 #include "Generator.h"
 #include <Windows.h>
+#include "Timer.h"
 
 
 int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned long ulPeriod, const unsigned long ulSamplePeriod) {
@@ -24,6 +25,10 @@ int generate_RT(enum eSIGNAL eSignal, SignalPoint sAmplitude, const unsigned lon
 
 	//generating
 	while (!abortSig) {
+		while (WaitForSingleObject(Timer_Semaphore, 500) == WAIT_TIMEOUT) { //wait for timer
+			if (abortSig) return -1;
+		}
+
 		switch (eSignal) {
 		case SINUS: {
 			newSample = 0;

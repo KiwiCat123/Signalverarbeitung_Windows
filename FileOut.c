@@ -44,6 +44,7 @@ void consoleOut() {
 		while (WaitForSingleObject(Timer_Handle, INFINITE) == WAIT_TIMEOUT) { //wait for timer
 			if (abortSig) return;
 		}
+		ReleaseSemaphore(Timer_Semaphore, 2, NULL); //release Filter, Generator
 
 		//calculate time between new samples
 		oldTime = TimeInLongLong.QuadPart;
@@ -56,7 +57,7 @@ void consoleOut() {
 
 		printf_s("%i, %i, %.4f ms\n", generatorSample, sampleOut, TimeInDouble);
 
-		while (_signal_out) { //wait for generator flag to get set
+		while (_signal_out) { //wait for filter flag to get set
 			if (abortSig) return;
 		}
 		sampleOut = filterOutBuf; //read new sample from filter
@@ -85,6 +86,7 @@ void CSV_out() {
 		while (WaitForSingleObject(Timer_Handle, INFINITE) == WAIT_TIMEOUT) { //wait for timer
 			if (abortSig) return;
 		}
+		ReleaseSemaphore(Timer_Semaphore, 2, NULL); //release Filter, Generator
 
 		fprintf(outFile, "%llu;%i;%i\n", time, generatorSample, sampleOut);
 		time += PERIOD;

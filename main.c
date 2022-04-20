@@ -9,7 +9,7 @@
 #include "Timer.h"
 #include <limits.h>
 
-#define TEST_SAMPLES 50
+#define TEST_SAMPLES 500
 
 volatile bool abortSig = FALSE; //Signal to end in RT-mode, true = end
 unsigned long long* collectedTimes = NULL; //collected time differences by consoleOut()
@@ -48,6 +48,9 @@ int main(int argc, char* argv[]) {
 
 		result_statistics();
 
+		//cleanup
+		CloseHandle(Timer_Handle);
+		CloseHandle(Timer_Semaphore);
 		_fcloseall();
 		free(collectedTimes);
 	}

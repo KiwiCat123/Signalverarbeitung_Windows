@@ -4,6 +4,7 @@
 #include "Filter_1.h"
 #include "Generator.h"
 #include <stdbool.h>
+#include "Timer.h"
 
 const double dCoeff[9] = {
 		0.01755601878003,  0.04801081081975,   0.1223468789475,   0.1976006889745,
@@ -56,6 +57,10 @@ int filter_RT() {
 	_generator_ready = true; //reset generator flag
 
 	while (!abortSig) {
+		while (WaitForSingleObject(Timer_Semaphore, 500) == WAIT_TIMEOUT) { //wait for timer
+			if (abortSig) return -1;
+		}
+		
 		newGenSample = sampleBuffer[bufferPos]; //save last sample from generator
 		
 		for (i = 0; i < FILTER_LENGTH; i++) {
